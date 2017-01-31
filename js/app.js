@@ -55,6 +55,36 @@
       $('.modal-trigger').leanModal();
     }
   };
+$('#search-form').submit(function(event) {
+  event.preventDefault();
+  let value = $('#search').val();
+  if (value === "") {
+    alert("please enter a search!");
+    return;
+  }
+  //movies.length = 0;
+  //renderMovies();
+  $.ajax({
+    url: "http://www.omdbapi.com/",
+    data: {
+      s: value
+    }
+  }).then(function(response) {
+    movies.length = 0;
+    if (response.Search !== undefined) {
+      for (const result of response.Search) {
+        movies.push({
+          title: result.Title,
+          poster: result.Poster,
+          id: result.imdbID,
+          year: result.Year
+        });
+      }
+      renderMovies();
+    } else {
+      $('#listings').html('no results!');
+    }
+  });
+});
 
-  // ADD YOUR CODE HERE
 })();
